@@ -92,6 +92,7 @@ def summarize_text(text, model = GOOGLE_MODEL):
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel(model)
     response = model.generate_content(f"The following is an excerpt from a book. In bullet point format, summarize the key takeaways from the following text: \n\n{text}")
+    #Optional prompt for fiction books: f"Put yourself into the shoes of a fiction author. Your current goal is to read other fiction books in order to gain ideas about prose, plot, characters, themes, and symbols you can use in your own writing. Before you is an excerpt of a fiction book. Use it to highlight any sentences, passages, or ideas that you believe are exemplary and can be tucked away for later use for inspiration in your own writing. Here is the excerpt: \n\n{text}
     return response.text
 
 #Processing all the segments using Google
