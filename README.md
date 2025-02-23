@@ -20,6 +20,12 @@ Another thing is rate limits. You can (currently) ask Gemini for 10 requests per
 
 # TODO
 
-- Variant for extracting excerpts and style knowledge for authors from fiction books
-- Add a rate limiter
 - Create a version that just uses a local model
+
+
+# CHANGELOG 
+
+2025/02/22
+- Added Pycryptdome to required packages for PDFs that had AES Encryption turned on
+- Added a sleep timer to the AI summary portion that makes it less likely to trigger a quota limit
+- Updated the prompt so that it automatically kills gibberish/useless excerpts

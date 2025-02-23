@@ -1,13 +1,14 @@
 import os
 import PyPDF2
 import ebooklib
+import time
 from ebooklib import epub
 import google.generativeai as genai
 
 # Configuration
 CHAR_PER_PAGE = 3000  # Roughly 3000 characters per page
-MIN_PAGE_COUNT = 10
-MAX_PAGE_COUNT = 25
+MIN_PAGE_COUNT = 10 #The minimum pages the tool will scrape. Helpful for lowering the chance of it catching a two-pager thats nothing but the references from the back of a research article.
+MAX_PAGE_COUNT = 25 #The maximum pages the tool will scrape. Use what's best for your model. Gemini 2.0 Flash can do about 100-200 pages with few issues, but the detail of the notes gets worse the larger the size. 
 MIN_CHARS = MIN_PAGE_COUNT * CHAR_PER_PAGE
 MAX_CHARS = MAX_PAGE_COUNT * CHAR_PER_PAGE
 BOOKS_INPUT_FOLDER = "1-books"
@@ -91,7 +92,7 @@ def process_book_files():
 def summarize_text(text, model = GOOGLE_MODEL):
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel(model)
-    response = model.generate_content(f"The following is an excerpt from a book. In bullet point format, summarize the key takeaways from the following text: \n\n{text}")
+    response = model.generate_content(f"The following is an excerpt from a book. In bullet point format, summarize the key takeaways from the following text. If the text is unreadable/gibberish, or appears to be purely bibliographic information (such as a references page or a table of contents), simply reply with 'skip'. The text is as follows: \n\n{text}")
     #Optional prompt for fiction books: f"Put yourself into the shoes of a fiction author. Your current goal is to read other fiction books in order to gain ideas about prose, plot, characters, themes, and symbols you can use in your own writing. Before you is an excerpt of a fiction book. Use it to highlight any sentences, passages, or ideas that you believe are exemplary and can be tucked away for later use for inspiration in your own writing. Here is the excerpt: \n\n{text}
     return response.text
 
@@ -106,6 +107,7 @@ def process_text_segments():
             markdown_filename = os.path.splitext(filename)[0] + ".md"
             markdown_path = os.path.join(MARKDOWN_SUMMARIES_FOLDER, markdown_filename)
             with open(text_path, 'r', encoding='utf-8') as file:
+                time.sleep(20)  # Wait 20 seconds between API calls to avoid quota limits
                 text = file.read()
                 summary = summarize_text(text)
             with open(markdown_path, 'w', encoding='utf-8') as file:
