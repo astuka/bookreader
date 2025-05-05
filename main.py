@@ -4,6 +4,10 @@ import ebooklib
 import time
 from ebooklib import epub
 import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configuration
 CHAR_PER_PAGE = 3000  # Roughly 3000 characters per page
@@ -16,7 +20,9 @@ TEXT_SEGMENTS_FOLDER = "2-segments"
 MARKDOWN_SUMMARIES_FOLDER = "3-summaries"
 
 # API Stuff
-GOOGLE_API_KEY = "YOUR_API_KEY"
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY not found in environment variables. Please check your .env file.")
 GOOGLE_MODEL = "gemini-2.0-flash-exp" #I did this model because its currently free. When you use it it will probably be super expensive. Be careful!
 
 
